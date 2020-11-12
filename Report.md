@@ -1,4 +1,4 @@
-# CMPUT 291 Mini Project 1
+# CMPUT 291 Mini Project 2
 Group Members:
 
 - Mitchell Adam - `mbadam`
