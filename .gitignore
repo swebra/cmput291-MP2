@@ -5,3 +5,4 @@ __pycache__/
 *.log
 Report.pdf
 prjcode.tgz
+json/*.json
