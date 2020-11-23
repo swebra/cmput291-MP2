@@ -1,8 +1,31 @@
 
 from sys import argv, exit
 from pymongo import MongoClient
+import ijson
 
 db_name = "291db"
+
+
+def insertPosts(collection):
+    with open("json/Posts.json", "r") as f:
+        posts = ijson.items(f, "posts.row.item")
+        for post in posts:
+            collection.insert_one(post)
+
+
+def insertTags(collection):
+    with open("json/Tags.json", "r") as f:
+        tags = ijson.items(f, "tags.row.item")
+        for tag in tags:
+            collection.insert_one(tag)
+
+
+def insertVotes(collection):
+    with open("json/Votes.json", "r") as f:
+        votes = ijson.items(f, "votes.row.item")
+        for vote in votes:
+            collection.insert_one(vote)
+
 
 if __name__ == "__main__":
     if (len(argv) <= 1 or len(argv) > 2):
@@ -19,3 +42,7 @@ if __name__ == "__main__":
         if coll in db.list_collection_names():
             db.drop_collection(coll)
             db = db.create_collection(coll)
+
+    insertPosts(db.Posts)
+    insertTags(db.Tags)
+    insertVotes(db.Votes)
