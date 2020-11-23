@@ -17,5 +17,5 @@ if __name__ == "__main__":
 
     for coll in ["Posts", "Tags", "Votes"]:
         if coll in db.list_collection_names():
-            db.drop_collection("Posts")
-            db = db[coll]
+            db.drop_collection(coll)
+            db = db.create_collection(coll)
