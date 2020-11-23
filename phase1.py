@@ -3,15 +3,23 @@ from pymongo import MongoClient
 import ijson
 
 db_name = "291db"
+buffer_size = 5000
 
 
 def insertJsonRowItems(collection):
     coll_name = collection.name
     with open("json/" + coll_name + ".json", "r") as f:
-        documents = ijson.items(f, coll_name.lower() + ".row.item")
+        docs = ijson.items(f, coll_name.lower() + ".row.item")
 
-        for document in documents:
-            collection.insert_one(document)
+        doc_buffer = []
+        for doc in docs:
+            doc_buffer.append(doc)
+            if len(doc_buffer) >= buffer_size:
+                collection.insert_many(doc_buffer)
+                doc_buffer = []
+        # "Flush" any remaining docs in buffer
+        if doc_buffer:
+            collection.insert_many(doc_buffer)
 
 
 if __name__ == "__main__":
