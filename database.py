@@ -98,5 +98,45 @@ def search_posts(keywords):
 
 
 def increment_question_view_count(post):
+    """Increments the view count of question's related post
+
+    Args:
+        post()
+    Returns:
+        (bool)
     #TODO: Implement
+    """
     print("Incremented question view count...")
+
+def post_answer(qid, body, uid):
+    """Posts an answer in response to a given question
+
+    Args:
+        qid (str): the id of the question being answer
+        body (str): the body of the answer
+        uid (str): the id of the poster who is answering
+    Returns:
+        (bool): True on success, False otherwise
+    """
+    try:
+        post = {
+            "PostTypeId": "2",
+            "ParentId": qid,
+            "CreationDate": datetime.datetime.utcnow(),
+            "Score": 0,
+            "CommentCount": 0,
+            "Body": body,
+            "ContentLicense": "CC BY-SA 2.5"
+        }
+
+        if uid is not None:
+            post["OwnerUserId"] = uid
+
+        post["Id"] = generate_unique_post_id(10)
+
+        post_id = db.Posts.insert_one(post).inserted_id
+    except Exception as e:
+        print(e)
+        return False
+
+    return True
