@@ -187,8 +187,13 @@ def question_action(post):
 
 
 def post_answer(post):
-    #TODO:
-    pass
+    print("Enter the body of the answer:")
+    body = request_input()[0]
+    post_success = db.post_answer(post["Id"], body, uid)
+    if post_success:
+        print("Answer successfully posted")
+    else:
+        print("Answer failed to post") 
 
 
 def see_question_answers(post):
