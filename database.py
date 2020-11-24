@@ -84,7 +84,7 @@ def post_question(title, body, uid, tags):
     return True
 
 
-def search_posts(keywords):
+def search_questions(keywords):
     """Searches all posts related by keywords
 
     Args:
@@ -92,8 +92,26 @@ def search_posts(keywords):
     Returns:
         ([results row]): The list of matching posts
     """
-    #TODO: Implement
     print("Searching posts...", keywords)
+    try:
+        conditions = []
+        for keyword in keywords:
+            conditions.append({"Title" : {"$regex" : ".*" + keywords[0] + ".*", "$options": "-i"}})
+            conditions.append({"Body" : {"$regex" : ".*" + keywords[0] + ".*", "$options": "-i"}})
+            conditions.append({"Tags" : {"$regex" : ".*" + keywords[0] + ".*", "$options": "-i"}})
+
+        query = {
+            "$and" : [
+                {"PostTypeId": "1"},
+                { "$or" : conditions}
+            ]
+        }
+
+        return list(db.Posts.find(query))
+        
+    except Exception as e:
+        print(e)
+        return []
     return [1, 2 ,3]
 
 

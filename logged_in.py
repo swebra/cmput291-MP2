@@ -92,7 +92,7 @@ def search_select_questions():
         if keywords[0] == "/back":
             return None
 
-        results = db.search_posts(keywords)
+        results = db.search_questions(keywords)
         if len(results) > 0:
             break
         print("No results found for keywords:", str(keywords), "\n")
@@ -140,7 +140,13 @@ def print_search_results(results, min_i, max_i):
     """
     #TODO: Impelement
     print("These are the results...")
-    print(results)
+    for i in range(min_i, max_i):
+        result = results[i]
+        title = result["Title"]
+        creationDate = result["CreationDate"]
+        score = result["Score"]
+        answerCnt = result["AnswerCount"]
+        print(str(i + 1) + ".\t" + title + "\t" + creationDate + "\t" + str(score) + "\t" + str(answerCnt))
 
 
 def question_action(post):
