@@ -197,5 +197,8 @@ def see_question_answers(post):
 
 
 def post_vote(post):
-    #TODO:
-    pass
+    vote_success = db.post_vote(post["Id"], uid)
+    if vote_success:
+        print("Vote successfully posted")
+    else:
+        print("Vote failed to post") 

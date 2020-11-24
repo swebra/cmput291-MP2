@@ -24,6 +24,21 @@ def generate_unique_post_id(length):
             except Exception as e:
                 print(e)
 
+def generate_unique_vote_id(length):
+    """Generates unique Id of a vote
+
+    Returns:
+    (string): Unique Id
+    """
+    while(True):
+            key = ''.join(random.choice(string.digits) for _ in range(length))
+
+            try:
+                result = db.Votes.find_one({"Id": key})
+                if result is None:
+                    return key
+            except Exception as e:
+                print(e)
 
 def connect(port):
     """Attempts to connect to the database
@@ -227,6 +242,39 @@ def post_answer(qid, body, uid):
         post["Id"] = generate_unique_post_id(10)
 
         post_id = db.Posts.insert_one(post).inserted_id
+    except Exception as e:
+        print(e)
+        return False
+
+    return True
+
+def post_vote(pid, uid):
+    """Posts a vote to a post
+
+    Args:
+        pid (str): the Id of the post being voted on
+        uid (str): the Id of the current user
+    Returns:
+        (bool): True on success, False otherwise
+    """
+    try:
+        vote = {
+            "PostId": pid,
+            "VoteTypeId": "2",
+            "CreationDate": datetime.datetime.utcnow(),
+        }
+
+        if uid is not None:
+            vote["UserId"] = uid
+            result = db.Votes.find_one({"PostId": pid, "UserId": uid})
+            if result is not None:
+                print("You have already voted on this post!")
+                return False
+
+        vote["Id"] = generate_unique_vote_id(10)
+        vote_id = db.Votes.insert_one(vote).inserted_id
+        db.Posts.update_one({"Id": pid}, {"$inc": {"Score": 1}})
+            
     except Exception as e:
         print(e)
         return False

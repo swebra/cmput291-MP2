@@ -43,6 +43,7 @@ Tasks:
     - increment_question_view_count()
     - post_answer()
     - search_questions()
+    - post_vote()
 
 #### Eric
 
