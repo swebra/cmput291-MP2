@@ -98,13 +98,15 @@ def get_user_statistics(uid):
             }}
         ]))
 
-        return (
-            question_stats[0]["questionCount"],
-            question_stats[0]["avgScore"],
-            answer_stats[0]["answerCount"],
-            answer_stats[0]["avgScore"],
-            vote_stats[0]["voteCount"]
-        )
+
+        if question_stats:
+            return (
+                question_stats[0]["questionCount"],
+                question_stats[0]["avgScore"],
+                answer_stats[0]["answerCount"],
+                answer_stats[0]["avgScore"],
+                vote_stats[0]["voteCount"]
+            )
 
     except Exception as e:
         print(e)

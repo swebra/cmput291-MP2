@@ -11,14 +11,14 @@ if __name__ == '__main__':
     try:
         port = int(argv[1])
     except ValueError as e:
-        print("Invali port")
+        print("Invalid port")
         exit(1)
 
     is_connected = db.connect(port)
 
 
     uid = None
-    if (len(argv) > 2):
+    if (len(argv) > 2) and is_connected:
         uid = argv[2]
         statistics = db.get_user_statistics(uid)
         if statistics is not None:
@@ -28,6 +28,10 @@ if __name__ == '__main__':
             print("Answer Count: " + str(statistics[2]))
             print("Average Answer Count: " + str(statistics[3]))
             print("Vote Count: " + str(statistics[4]))
+        else:
+            print("No statistics found for uid", argv[2])
+
+        print("")
 
 
     while (is_connected):

@@ -300,7 +300,6 @@ def print_all_post_details(post):
         post (dict): The post to be printed
     """
 
-    #TODO: Maybe make this better? probably not worth....
     print("Selected post details:")
     for k in post.keys():
         print("-----------------------")
