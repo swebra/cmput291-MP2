@@ -175,7 +175,7 @@ def question_action(post):
         elif (action == "1"):
             post_answer(post)
         # Post action-see answers
-        elif (action == "3"):
+        elif (action == "2"):
             see_question_answers(post)
         # Post action-vote
         elif (action == "3"):
@@ -192,8 +192,8 @@ def post_answer(post):
 
 
 def see_question_answers(post):
-    #TODO:
-    pass
+    answers = db.get_answers_to_question(post)
+    print(answers)
 
 
 def post_vote(post):

@@ -112,8 +112,27 @@ def search_questions(keywords):
     except Exception as e:
         print(e)
         return []
-    return [1, 2 ,3]
 
+def get_answers_to_question(question):
+    """Returns all the answers to a given question
+
+    Args:
+        question (): The question whose answers are to be returned
+    Returns:
+        ([results row]): The list of answers
+    """
+    try:
+        query = {
+            "$and": [
+                {"PostTypeId": "2"},
+                {"ParentId": question["Id"]}
+            ]
+        }
+        return list(db.Posts.find(query))
+
+    except Exception as e:
+        print(e)
+        return []
 
 def increment_question_view_count(post):
     """Increments the view count of question's related post
