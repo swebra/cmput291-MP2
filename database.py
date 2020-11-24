@@ -119,12 +119,20 @@ def increment_question_view_count(post):
     """Increments the view count of question's related post
 
     Args:
-        post()
+        post (): the post whose ViewCount is to be incremented
     Returns:
-        (bool)
-    #TODO: Implement
+        (bool): True on success, False otherwise
     """
+    try:
+        query = {"Id": post["Id"]}
+        newvalues = {"$set": {"ViewCount": (post["ViewCount"] + 1)}}
+        db.Posts.update_one(query, newvalues)
+    except Exception as e:
+        print(e)
+        return False
+
     print("Incremented question view count...")
+    return True
 
 def post_answer(qid, body, uid):
     """Posts an answer in response to a given question
