@@ -20,7 +20,19 @@ if __name__ == '__main__':
     uid = None
     if (len(argv) > 2):
         uid = argv[2]
-        #TODO: Show report based on UID
+        (
+            questionCount,
+            avgQuestionScore,
+            answerCount,
+            avgAnswerScore,
+            voteCount
+        ) = db.get_user_statistics(uid)
+        #TODO: Make pretty
+        print("Question Count: " + str(questionCount))
+        print("Average Question Score: " + str(avgQuestionScore))
+        print("Answer Count: " + str(answerCount))
+        print("Average Answer Count: " + str(avgAnswerScore))
+        print("Vote Count: " + str(voteCount))
 
 
     while (is_connected):

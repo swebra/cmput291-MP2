@@ -44,6 +44,47 @@ def connect(port):
 
     return True
 
+def get_user_statistics(uid):
+    """Gets statistics about the logged in user
+    """
+    try:
+        question_stats = list(db.Posts.aggregate([
+            {"$match": {"OwnerUserId": uid, "PostTypeId": "1"}},
+            {"$group": {
+                "_id": "$OwnerUserId",
+                "questionCount": {"$sum": 1},
+                "avgScore": {"$avg": "$Score"}
+            }}
+        ]))
+
+        answer_stats = list(db.Posts.aggregate([
+            {"$match": {"OwnerUserId": uid, "PostTypeId": "2"}},
+            {"$group": {
+                "_id": "$OwnerUserId",
+                "answerCount": {"$sum": 1},
+                "avgScore": {"$avg": "$Score"}
+            }}
+        ]))
+
+        vote_stats = list(db.Votes.aggregate([
+            {"$match": {"UserId": uid}},
+            {"$group": {
+                "_id": "$UserId",
+                "voteCount": {"$sum": 1}
+            }}
+        ]))
+
+        return (
+            question_stats[0]["questionCount"],
+            question_stats[0]["avgScore"],
+            answer_stats[0]["answerCount"],
+            answer_stats[0]["avgScore"],
+            vote_stats[0]["voteCount"]
+        )
+
+    except Exception as e:
+        print(e)
+        return None
 
 def post_question(title, body, uid, tags):
     """Posts a new question
