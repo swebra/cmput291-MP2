@@ -124,7 +124,7 @@ def get_indices_range(results, old_min=-5, old_max=0):
     return new_min, new_max
 
 
-def get_table_info(data, header, trunc_widths={}, index_start=0):
+def get_table_info(data, header, trunc_widths={}, index_start=0, answer=False):
     """Returns table information for future printing with print_table
 
     The returned table is a copy of data with the elements stringified, every
@@ -138,12 +138,17 @@ def get_table_info(data, header, trunc_widths={}, index_start=0):
             elements truncated to the max width.
         index_start (int): If specified, the row indicies will start at that
             value
+        answer (bool): Whether this is for an answer table
     Returns:
         ([printable row]): The table
         ([int]): A list of the tables maximum character widths for each column
     """
-    data_table = [[str(i), *stringify_list([row["Title"], row["CreationDate"], row["Score"], row["AnswerCount"]], trunc_widths)]
-                  for i, row in enumerate(data, index_start)]
+    if answer:
+        data_table = [[str(i), *stringify_list([row["Body"], row["CreationDate"], row["Score"]], trunc_widths)]
+                        for i, row in enumerate(data, index_start)]
+    else:
+        data_table = [[str(i), *stringify_list([row["Title"], row["CreationDate"], row["Score"], row["AnswerCount"]], trunc_widths)]
+                    for i, row in enumerate(data, index_start)]
     data_table.insert(0, header)
     return data_table, get_column_widths(data_table)
 

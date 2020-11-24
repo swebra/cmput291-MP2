@@ -7,7 +7,7 @@ import random, string
 client = None
 db = None
 
-#TODO:
+
 def generate_unique_post_id(length):
     """Generates unique Id of a post
 
@@ -24,6 +24,7 @@ def generate_unique_post_id(length):
             except Exception as e:
                 print(e)
 
+
 def generate_unique_vote_id(length):
     """Generates unique Id of a vote
 
@@ -39,6 +40,7 @@ def generate_unique_vote_id(length):
                     return key
             except Exception as e:
                 print(e)
+
 
 def connect(port):
     """Attempts to connect to the database
@@ -58,6 +60,7 @@ def connect(port):
         return False
 
     return True
+
 
 def get_user_statistics(uid):
     """Gets statistics about the logged in user
@@ -106,6 +109,7 @@ def get_user_statistics(uid):
     except Exception as e:
         print(e)
         return None
+
 
 def post_question(title, body, uid, tags):
     """Posts a new question
@@ -175,6 +179,7 @@ def search_questions(keywords):
         print(e)
         return []
 
+
 def get_answers_to_question(question):
     """Returns all the answers to a given question
 
@@ -196,6 +201,7 @@ def get_answers_to_question(question):
         print(e)
         return []
 
+
 def increment_question_view_count(post):
     """Increments the view count of question's related post
 
@@ -213,6 +219,7 @@ def increment_question_view_count(post):
         return False
 
     return True
+
 
 def post_answer(qid, body, uid):
     """Posts an answer in response to a given question
@@ -246,6 +253,7 @@ def post_answer(qid, body, uid):
         return False
 
     return True
+
 
 def post_vote(pid, uid):
     """Posts a vote to a post

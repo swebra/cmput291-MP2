@@ -85,7 +85,6 @@ def search_select_questions():
         post_row: Row entry of the
             selected post, or None if user exits.
     """
-    # Search posts
     while (True):
         print("Enter keywords separated by a comma:")
         keywords = request_input()
@@ -130,47 +129,14 @@ def search_select_questions():
             print_invalid_option(max_option=len(results))
 
 
-def print_search_results(results, min_i, max_i):
-    """Prints the formatted results from a search of posts
-
-    Args:
-        results ([results row]): The list of search result rows
-        min_i (int): The minimum index of the printed results range (inclusive)
-        max_i (int): The maximum index of the printed results range (exclusive)
-    """
-
-    # Get table
-    max_widths = {1: 30}  # title and body (index 2 and 3) before index
-    header = ["Index", "Title", "CreationDate", "Score", "AnswerCount"]
-    table, widths = get_table_info(results[min_i:max_i], header,
-                                   trunc_widths=max_widths,
-                                   index_start=min_i + 1)  # Start indices at 1
-
-    # Generate width string
-    # Right-aligned index, 5 left-aligned columns, 3 right-aligned columns
-    width_str ="{{:{}}}  " * 5
-    width_str = width_str.format(*widths)
-
-    # Print the table
-    print_table(table, width_str, widths)
-    print("")
-
-
 def question_action(post):
-    """The execution loop of a user to take post actions on selected post
+    """The execution loop of a user to take post actions on selected question
 
     Args:
         post (post_row): The post on which post_actions are being executed
-    Returns:
-        (bool): True if the user chooses to logout, None otherwise
     """
     db.increment_question_view_count(post)
-    print("Selected post details:")
-    for k in post.keys():
-        print("-----------------------")
-        print(k, ": ", post[k])
-    print("-----------------------")
-    print("")
+    print_all_post_details(post)
 
     # Setup post action options
     pa_actions = ["Answer question", "See answers",
@@ -180,7 +146,6 @@ def question_action(post):
         print_options(pa_actions)
         action = request_input()[0]
 
-        logout = None
         if action == "/back":
             return
         # Post action-answer
@@ -188,7 +153,9 @@ def question_action(post):
             post_answer(post)
         # Post action-see answers
         elif (action == "2"):
-            see_question_answers(post)
+            answer = see_question_answers(post)
+            if answer is not None:
+                answer_action(answer)
         # Post action-vote
         elif (action == "3"):
             post_vote(post)
@@ -199,6 +166,12 @@ def question_action(post):
 
 
 def post_answer(post):
+    """ Post an answer to a question
+
+    Args:
+        post (dict): Question to post an answer to
+
+    """
     print("Enter the body of the answer:")
     body = request_input()[0]
     post_success = db.post_answer(post["Id"], body, uid)
@@ -209,13 +182,128 @@ def post_answer(post):
 
 
 def see_question_answers(post):
-    answers = db.get_answers_to_question(post)
-    print(answers)
+    """Get and view answers to given question
+
+    Args:
+        post (dict): Post to view answers on
+    """
+
+    results = db.get_answers_to_question(post)
+
+    print("Showing answers to post",)
+    print("Enter the index of the post to excute an action on that post:")
+    min_i, max_i = get_indices_range(results=results)
+    print("")
+    print_search_results(results, min_i, max_i, answer=True)
+
+    # Select posts
+    while (True):
+        action = request_input()[0]
+
+        if action == "more":
+            if len(results) <= max_i:
+                print("No more results are available")
+                continue
+
+            # Increment the min and max
+            min_i, max_i = get_indices_range(
+                results=results,
+                old_min=min_i,
+                old_max=max_i
+            )
+            print_search_results(results, min_i, max_i, answer=True)
+        elif action == "/back":
+            return None
+        elif is_index(action, results):
+            # Note: User input index starts at 1
+            return results[int(action) - 1]
+        else:
+            print_invalid_option(max_option=len(results))
+
+
+def answer_action(post):
+    """The execution loop of a user to take answer actions on selected post
+
+    Args:
+        post (post_row): The post on which post_actions are being executed
+    """
+
+    # Setup post action options
+    pa_actions = ["Vote"]
+
+    while(True):
+        print_options(pa_actions)
+        action = request_input()[0]
+
+        if action == "/back":
+            return
+        # Post action-vote
+        elif (action == "1"):
+            post_vote(post)
+            return
+        # Invalid selection
+        else:
+            print_invalid_option()
+        print("")
 
 
 def post_vote(post):
+    """ Add a vote to a post
+
+    Args:
+        post (dict): Post to vote on
+    """
     vote_success = db.post_vote(post["Id"], uid)
     if vote_success:
         print("Vote successfully posted")
     else:
         print("Vote failed to post")
+
+
+def print_search_results(results, min_i, max_i, answer=False):
+    """Prints the formatted results from a search of posts
+
+    Args:
+        results ([results row]): The list of search result rows
+        min_i (int): The minimum index of the printed results range (inclusive)
+        max_i (int): The maximum index of the printed results range (exclusive)
+        answer(bool): Whether the results are answers or not
+    """
+
+    # Get table
+    if answer:
+        max_widths = {0: 80}  # body (index 0) before index
+        header = ["Index", "Body", "CreationDate", "Score"]
+    else:
+        max_widths = {1: 30}  # title (index 2) before index
+        header = ["Index", "Title", "CreationDate", "Score", "AnswerCount"]
+
+    table, widths = get_table_info(results[min_i:max_i], header,
+                                   trunc_widths=max_widths,
+                                   index_start=min_i + 1, # Start indices at 1
+                                   answer=answer)
+
+    # Generate width string
+    # Right-aligned index * len(header)
+    width_str ="{{:{}}}  " * len(header)
+    width_str = width_str.format(*widths)
+
+    # Print the table
+    print_table(table, width_str, widths)
+    print("")
+
+
+def print_all_post_details(post):
+    """Prints the details of a post
+
+    Args:
+        post (dict): The post to be printed
+    """
+
+    #TODO: Maybe make this better? probably not worth....
+    print("Selected post details:")
+    for k in post.keys():
+        print("-----------------------")
+        print(k, ": ", post[k])
+    print("-----------------------")
+    print("")
