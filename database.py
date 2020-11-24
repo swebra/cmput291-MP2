@@ -170,7 +170,7 @@ def search_questions(keywords):
         }
 
         return list(db.Posts.find(query))
-        
+
     except Exception as e:
         print(e)
         return []
@@ -212,7 +212,6 @@ def increment_question_view_count(post):
         print(e)
         return False
 
-    print("Incremented question view count...")
     return True
 
 def post_answer(qid, body, uid):
@@ -274,7 +273,7 @@ def post_vote(pid, uid):
         vote["Id"] = generate_unique_vote_id(10)
         vote_id = db.Votes.insert_one(vote).inserted_id
         db.Posts.update_one({"Id": pid}, {"$inc": {"Score": 1}})
-            
+
     except Exception as e:
         print(e)
         return False

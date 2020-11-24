@@ -142,7 +142,7 @@ def get_table_info(data, header, trunc_widths={}, index_start=0):
         ([printable row]): The table
         ([int]): A list of the tables maximum character widths for each column
     """
-    data_table = [[str(i), *stringify_list(row, trunc_widths)]
+    data_table = [[str(i), *stringify_list([row["Title"], row["CreationDate"], row["Score"], row["AnswerCount"]], trunc_widths)]
                   for i, row in enumerate(data, index_start)]
     data_table.insert(0, header)
     return data_table, get_column_widths(data_table)

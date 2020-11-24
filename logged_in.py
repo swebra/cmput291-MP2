@@ -138,15 +138,22 @@ def print_search_results(results, min_i, max_i):
         min_i (int): The minimum index of the printed results range (inclusive)
         max_i (int): The maximum index of the printed results range (exclusive)
     """
-    #TODO: Impelement
-    print("These are the results...")
-    for i in range(min_i, max_i):
-        result = results[i]
-        title = result["Title"]
-        creationDate = result["CreationDate"]
-        score = result["Score"]
-        answerCnt = result["AnswerCount"]
-        print(str(i + 1) + ".\t" + title + "\t" + creationDate + "\t" + str(score) + "\t" + str(answerCnt))
+
+    # Get table
+    max_widths = {1: 30}  # title and body (index 2 and 3) before index
+    header = ["Index", "Title", "CreationDate", "Score", "AnswerCount"]
+    table, widths = get_table_info(results[min_i:max_i], header,
+                                   trunc_widths=max_widths,
+                                   index_start=min_i + 1)  # Start indices at 1
+
+    # Generate width string
+    # Right-aligned index, 5 left-aligned columns, 3 right-aligned columns
+    width_str ="{{:{}}}  " * 5
+    width_str = width_str.format(*widths)
+
+    # Print the table
+    print_table(table, width_str, widths)
+    print("")
 
 
 def question_action(post):
@@ -158,7 +165,12 @@ def question_action(post):
         (bool): True if the user chooses to logout, None otherwise
     """
     db.increment_question_view_count(post)
-    #TODO: Need to print all post details here
+    print("Selected post details:")
+    for k in post.keys():
+        print("-----------------------")
+        print(k, ": ", post[k])
+    print("-----------------------")
+    print("")
 
     # Setup post action options
     pa_actions = ["Answer question", "See answers",
@@ -193,7 +205,7 @@ def post_answer(post):
     if post_success:
         print("Answer successfully posted")
     else:
-        print("Answer failed to post") 
+        print("Answer failed to post")
 
 
 def see_question_answers(post):
@@ -206,4 +218,4 @@ def post_vote(post):
     if vote_success:
         print("Vote successfully posted")
     else:
-        print("Vote failed to post") 
+        print("Vote failed to post")
