@@ -37,7 +37,12 @@ Time Estimate:
 
 Tasks:
 
-- Example task, delete me
+- implement database functionality including:
+    - get_user_statistics()
+    - get_answers_to_question()
+    - increment_question_view_count()
+    - post_answer()
+    - search_questions()
 
 #### Eric
 

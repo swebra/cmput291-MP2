@@ -20,19 +20,14 @@ if __name__ == '__main__':
     uid = None
     if (len(argv) > 2):
         uid = argv[2]
-        (
-            questionCount,
-            avgQuestionScore,
-            answerCount,
-            avgAnswerScore,
-            voteCount
-        ) = db.get_user_statistics(uid)
-        #TODO: Make pretty
-        print("Question Count: " + str(questionCount))
-        print("Average Question Score: " + str(avgQuestionScore))
-        print("Answer Count: " + str(answerCount))
-        print("Average Answer Count: " + str(avgAnswerScore))
-        print("Vote Count: " + str(voteCount))
+        statistics = db.get_user_statistics(uid)
+        if statistics is not None:
+            #TODO: Make pretty
+            print("Question Count: " + str(statistics[0]))
+            print("Average Question Score: " + str(statistics[1]))
+            print("Answer Count: " + str(statistics[2]))
+            print("Average Answer Count: " + str(statistics[3]))
+            print("Vote Count: " + str(statistics[4]))
 
 
     while (is_connected):

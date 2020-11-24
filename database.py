@@ -46,6 +46,12 @@ def connect(port):
 
 def get_user_statistics(uid):
     """Gets statistics about the logged in user
+
+    Args:
+        uid (str): The Id of the User to get statistics about
+    Returns:
+        ((int, float, int, float, int)): A tuple consisting of questionCount,
+        avgQuestionScore, answerCount, avgAnswerScore, and voteCount
     """
     try:
         question_stats = list(db.Posts.aggregate([
