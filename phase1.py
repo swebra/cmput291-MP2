@@ -17,9 +17,7 @@ def insertJsonRowItems(collection):
         doc_buffer = []
         for doc in docs:
             if is_posts:
-                term_list = getTermList(doc)
-                if term_list:
-                    doc["terms"] = term_list
+                addTermList(doc)
 
             doc_buffer.append(doc)
             if len(doc_buffer) >= buffer_size:
@@ -30,10 +28,12 @@ def insertJsonRowItems(collection):
             collection.insert_many(doc_buffer)
 
 
-def getTermList(doc):
+def addTermList(doc):
     # String concatenation marginally faster than regex*2 and set union
     title_body_str = doc.get("Title", "") + " " + doc.get("Body", "")
-    return list(set(map(str.lower, term_pattern.findall(title_body_str))))
+    terms = set(term_pattern.findall(title_body_str))
+    if terms:
+        doc["terms"] = [term.lower() for term in terms]
 
 
 if __name__ == "__main__":
