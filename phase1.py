@@ -1,36 +1,31 @@
 from sys import argv, exit
 import re
-import multiprocessing
 from pymongo import MongoClient
 import ijson
 
 db_name = "291db"
-buffer_size = 10000
+buffer_size = 1000
 term_pattern = re.compile("[A-Za-z0-9]{3,}")
 
 
 def insert_json(collection):
     coll_name = collection.name
+    is_posts = coll_name == "Posts"
     with open("json/" + coll_name + ".json", "r") as f:
         docs = ijson.items(f, coll_name.lower() + ".row.item")
 
         doc_buffer = []
         for doc in docs:
+            if is_posts:
+                add_term_list(doc)
+
             doc_buffer.append(doc)
             if len(doc_buffer) >= buffer_size:
-                insert_doc_list(collection, doc_buffer)
+                collection.insert_many(doc_buffer)
                 doc_buffer = []
         # "Flush" any remaining docs in buffer
         if doc_buffer:
-            insert_doc_list(collection, doc_buffer)
-
-
-def insert_doc_list(collection, doc_list):
-    if collection.name == "Posts":
-        with multiprocessing.Pool() as pool:
-            doc_list = list(pool.map(add_term_list, doc_list))
-
-    collection.insert_many(doc_list)
+            collection.insert_many(doc_buffer)
 
 
 def add_term_list(doc):
