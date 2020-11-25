@@ -3,8 +3,6 @@ from pymongo import MongoClient
 import datetime
 import random, string
 
-
-client = None
 db = None
 
 
@@ -48,13 +46,11 @@ def connect(port):
     Returns:
         (bool): True on connection success, False otherwise
     """
-    try:
-        global client
-        client = MongoClient('localhost', port)
+    client = MongoClient("localhost", port)
 
+    try:
         global db
-        db = client['291db']
-        return True
+        db = client["291db"]
     except Exception as e:
         print(e)
         return False
