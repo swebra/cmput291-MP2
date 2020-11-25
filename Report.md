@@ -30,16 +30,16 @@ The system was implemented in Python and uses a CLI interface for user interacti
 ### User Guide
 #### For Phase 1:
 1. Initialize the database with `python3 phase1.py $PORT $DIR` where $PORT is the port number on which MongoDB is running and $DIR is an optional parameter to specify the directory to look for Posts.json, Tags.json and Votes.json. If $DIR is not specified, the current working directory will be used.
-2. This will read the Posts.json, Tags.json, and Votes.json files listed under the $DIR directory and populate the MongoDB database `291db`.
+2. This python code will read the provided JSON files and will appropriately populate the MongoDB database `291db`.
 
 #### For Phase 2:
-1. After Phase 1 has completed, Run phase 2 with `python3 phase2.py $PORT $UID` where $PORT is the port number on which MongoDB is running and $UID is an optional parameter to specify the User Id which is logging into the system
-2. From here, the program will prompt the user for input, allowing the user to execute the desired functionality of the program. Any changes made to the database through the program will be reflected in the `291db` Mongo database
+1. After Phase 1 has completed, run phase 2 with `python3 phase2.py $PORT $UID` where $PORT is the port number on which MongoDB is running and $UID is an optional parameter to specify the User Id which is logging into the system.
+2. From here, the program will prompt the user for input, allowing the user to execute the desired functionality of the program. Any changes made to the database through the program will be reflected in the `291db` Mongo database.
 3. At any point in the program's execution where input is requested, `/exit` can be used to quit the program and `/back` can be used to return to the previous menu.
 
 ## Software Design
 #### For Phase 1:
-`phase1.py` handles the CLI arguments and has the following responsibilities: Initialize the database connection (via `database.py`), read json entries from the Posts.json, Tags.json and Votes.json files within the provided directory and insert the documents into the `291db` database.
+`phase1.py` covers the following responsibilities: Initializizing a Mongo connection, resetting the `291db` database if required (dropping and reinitializing), sequentially reading read JSON entries from Posts.json, Tags.json and Votes.json, extracting keyword terms from the Posts entries, inserting the entries into appropriate collections in the `291db` database, and creating an index on `Posts.Terms`. Phase 1 proved to be an interesting challenge in terms of optimizing  performance and maintaining reasonable memory usage. Reads and writes are done using a buffer system to reduce the memory footprint, with minimal performace losses. With respect to term extraction, many approaches were considered, implemented, and tested. In the end, a regex-based approach implemented in Python proved to be the best performing on the sample data. Some of the other approaches tested include regex-based update in Mongo, multiprocessing in Python, and multithreading in Python.
 
 #### For Phase 2:
 `phase2.py` handles the CLI arguments and has only three responsibilities: Initialize the database connection (via `database.py`), display statistics about the current user if a UID is provided, and pass the user information to the main execution loop of `logged_in.py`.
@@ -51,8 +51,7 @@ The system was implemented in Python and uses a CLI interface for user interacti
 `utils.py` is the only other python file, and contains helper utility functions. These functions are used for tasks such as input parsing, error messaging and print formatting. This allows easy reuse of common functionality, keeping other files clean.
 
 ## Testing Strategy
-Two primary testing strategies were employed. Firstly, manually testing was done of UI and functionality. Each requirements were tested by simulating the actions described on the rubric. Correctness was checked by
-using the mongo terminal and ensuring that expected results were there. UI/control functionality was also tested during this time. Secondly, to test the speed, shell scripts were created to time performance, specifically in phase 1. From this, we were able to increase performance of phase 1 by analyzing the time increase/decrease of specific changes. We also manually tested the timing of actions, such as search to ensure they were "instant".
+Two primary testing strategies were employed. Firstly, manually testing was done of UI and functionality. Each requirements were tested by simulating the actions described on the rubric. Correctness was checked by using the mongo terminal and ensuring that expected results were there. UI/control functionality was also tested during this time. Secondly, to test the speed, shell scripts were created to time performance, specifically in phase 1. From this, we were able to increase performance of phase 1 by analyzing the time increase/decrease of specific changes. We also manually tested the timing of actions, such as search to ensure they were "instant".
 
 ## Group Work Strategy
 Our group began work on the project ~1 week before the deadline. At this time, each member of the team began to familiarize themselves with the project and began to understand what was required. Because this project was structurally similar to the Mini-Project 1, members already were fairly familiar with the requirements of the project. As members began to work, they would update the other members on what had been accomplished and what was the next item on the TODO list as well as any bugs or issues that they had encountered. Group members would consistently keep a tally of what work was completed and what work was still required to implement and group members were able to choose tasks to whittle down the necessary work.
@@ -106,8 +105,17 @@ Tasks:
 
 #### Eric
 
-Time Estimate: 14 hours
+Time Estimate: ~14 hours
+
+Note that this larger time estimate is primarily a function of the extensive performance testing that was involved in my role, and shouldn't be interpreted as my team members contributing any less to the overall project.
 
 Tasks:
 
-- Example task, delete me
+- Initial naive implementation of phase 1 to allow the other members to start on phase 2
+- Implementation of phase 1 performance optimizations
+- Implementation of phase 1 memory-usage optimizations
+- Execution of phase 1 performance testing and alternative approach evaluation
+- Execution of phase 1 correctness testing
+- Iteration on initial search implementation to utilize the terms index appropriately
+- Addition of docstrings to phase 1 functions
+- Additions to report
