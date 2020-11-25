@@ -90,7 +90,6 @@ def get_user_statistics(uid):
             }}
         ]))
 
-
         questionCount = 0 if len(question_stats) == 0 else question_stats[0]["questionCount"]
         avgQuestionScore = 0 if len(question_stats) == 0 else question_stats[0]["avgScore"]
         answerCount = 0 if len(answer_stats) == 0 else answer_stats[0]["answerCount"]
@@ -141,7 +140,7 @@ def post_question(title, body, uid, tags):
 
         post["Id"] = generate_unique_id(10, collection="Posts")
 
-        post_id = db.Posts.insert_one(post).inserted_id
+        db.Posts.insert_one(post).inserted_id
 
         # Post tags or increment tag count
         for tag in tags:
@@ -154,7 +153,7 @@ def post_question(title, body, uid, tags):
                     "TagName": tag,
                     "Count": 1
                 }
-                tag_id = db.Tags.insert_one(tag_insert).inserted_id
+                db.Tags.insert_one(tag_insert).inserted_id
             else:
                 # increment count
                 query = {"TagName": tag}
@@ -268,7 +267,7 @@ def post_answer(qid, body, uid):
 
         post["Id"] = generate_unique_id(10, collection="Posts")
 
-        post_id = db.Posts.insert_one(post).inserted_id
+        db.Posts.insert_one(post).inserted_id
     except Exception as e:
         print(e)
         return False
@@ -300,7 +299,7 @@ def post_vote(pid, uid):
                 return False
 
         vote["Id"] = generate_unique_id(10, collection="Votes")
-        vote_id = db.Votes.insert_one(vote).inserted_id
+        db.Votes.insert_one(vote).inserted_id
         db.Posts.update_one({"Id": pid}, {"$inc": {"Score": 1}})
 
     except Exception as e:
