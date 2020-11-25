@@ -15,14 +15,14 @@ def generate_unique_post_id(length):
     (string): Unique Id
     """
     while(True):
-            key = ''.join(random.choice(string.digits) for _ in range(length))
+        key = ''.join(random.choice(string.digits) for _ in range(length))
 
-            try:
-                result = db.Posts.find_one({"Id": key})
-                if result is None:
-                    return key
-            except Exception as e:
-                print(e)
+        try:
+            result = db.Posts.find_one({"Id": key})
+            if result is None:
+                return key
+        except Exception as e:
+            print(e)
 
 
 def generate_unique_vote_id(length):
@@ -32,14 +32,14 @@ def generate_unique_vote_id(length):
     (string): Unique Id
     """
     while(True):
-            key = ''.join(random.choice(string.digits) for _ in range(length))
+        key = ''.join(random.choice(string.digits) for _ in range(length))
 
-            try:
-                result = db.Votes.find_one({"Id": key})
-                if result is None:
-                    return key
-            except Exception as e:
-                print(e)
+        try:
+            result = db.Votes.find_one({"Id": key})
+            if result is None:
+                return key
+        except Exception as e:
+            print(e)
 
 
 def connect(port):

@@ -220,6 +220,34 @@ def print_table(table, width_str, widths):
     for row in table[1:]:
         print(width_str.format(*row))
 
+def print_user_statistics(statistics):
+    """Pretty prints the user statistics
+
+    Args:
+        stastics ([int, float, int, float, int]): The user statistics to be
+            printed. Consists of, in order, the number of questions, average
+            question score, number of answers, average answer score, and
+            number of votes
+    """
+    headers = [
+        "Question Count",
+        "Average Question Score",
+        "Answer Count",
+        "Average Answer Count",
+        "Vote Count"
+    ]
+    print("Selected User Statistics:")
+    print(*["-" * len(header) for header in headers], sep="----")
+    print(*headers, sep="    ")
+    print(*["-" * len(header) for header in headers], sep="    ")
+    for i in range(len(headers)):
+        if i % 2 == 0:
+            print(("{:" + str(len(headers[i])) + "}").format(statistics[i]), end="    ")
+            # print(f"{statistics[i]:len(headers[i])}")
+        else:
+            print(("{:" + str(len(headers[i])) + ".3f}").format(statistics[i]), end="    ")
+    print()
+
 
 def is_index(s, results):
     """Returns whether string s is an appropriate index into results
