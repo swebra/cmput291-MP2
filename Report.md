@@ -82,10 +82,11 @@ Tasks:
 - testing
     - thoroughly test program according to rubric
     - identify key bugs
-- additions to import
+- additions to report
+
 #### Nayan
 
-Time Estimate:
+Time Estimate: ~10 hours
 
 Tasks:
 
