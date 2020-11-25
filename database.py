@@ -173,6 +173,7 @@ def search_questions(keywords):
             else:
                 conditions.append({"Title": {"$regex": "^.*" + keyword, "$options": "-i"}})
                 conditions.append({"Body": {"$regex": "^.*" + keyword, "$options": "-i"}})
+                conditions.append({"Tags": {"$regex": "^.*" + keyword, "$options": "-i"}})
 
         query = {
             "$and": [
