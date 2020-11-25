@@ -70,7 +70,11 @@ if __name__ == "__main__":
               "directory), received", len(argv) - 1)
         exit(1)
 
-    client = MongoClient("localhost", int(argv[1]))
+    try:
+        client = MongoClient("localhost", int(argv[1]))
+    except ValueError:
+        print("Invalid port number given")
+        exit(1)
 
     if db_name in client.list_database_names():
         client.drop_database(db_name)
