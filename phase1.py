@@ -9,6 +9,14 @@ term_pattern = re.compile("[A-Za-z0-9]{3,}")
 
 
 def insert_json(collection):
+    """Inserts items into the given collection read from a JSON file
+    The JSON file is expected to match the collection's name, and have a list
+    of data entries under the <collection name>.row field. Reading is buffered
+    according to the global `buffer_size` parameter to limit memory usage.
+
+    Args:
+        collection: Mongo collection to insert json data into
+    """
     coll_name = collection.name
     is_posts = coll_name == "Posts"
     with open("json/" + coll_name + ".json", "r") as f:
@@ -29,13 +37,19 @@ def insert_json(collection):
 
 
 def add_term_list(doc):
+    """Creates and adds a term list to the given document
+    Title, body, and tag fields are parsed for alphanumeric substrings and the
+    resulting list is added to the given document under the "Terms" field.
+
+    Args:
+        doc: Document (dictionary) to which the term list is added
+    """
     # String concatenation marginally faster than regex*3 and set updates
     title_body_str = doc.get("Title", "") + " " + doc.get("Body", "") \
                      + " " + doc.get("Tags", "")
     terms = set(term_pattern.findall(title_body_str))
     if terms:
         doc["Terms"] = [term.lower() for term in terms]
-    return doc
 
 
 if __name__ == "__main__":
