@@ -8,7 +8,7 @@ client = None
 db = None
 
 
-def generate_unique_post_id(length):
+def generate_unique_id(length, collection):
     """Generates unique Id of a post
 
     Returns:
@@ -18,24 +18,15 @@ def generate_unique_post_id(length):
         key = ''.join(random.choice(string.digits) for _ in range(length))
 
         try:
-            result = db.Posts.find_one({"Id": key})
-            if result is None:
-                return key
-        except Exception as e:
-            print(e)
+            if collection == "Posts":
+                result = db.Posts.find_one({"Id": key})
+            elif collection == "Votes":
+                result = db.Votes.find_one({"Id": key})
+            elif collection == "Tags":
+                result = db.Tags.find_one({"Id": key})
+            else:
+                return None
 
-
-def generate_unique_vote_id(length):
-    """Generates unique Id of a vote
-
-    Returns:
-    (string): Unique Id
-    """
-    while(True):
-        key = ''.join(random.choice(string.digits) for _ in range(length))
-
-        try:
-            result = db.Votes.find_one({"Id": key})
             if result is None:
                 return key
         except Exception as e:
@@ -129,6 +120,7 @@ def post_question(title, body, uid, tags):
         (bool): True on success, False otherwise
     """
     try:
+        # Post post
         post = {
             "PostTypeId": "1",
             "CreationDate": datetime.datetime.utcnow(),
@@ -136,7 +128,7 @@ def post_question(title, body, uid, tags):
             "ViewCount": 0,
             "Body": body,
             "Title": title,
-            "Tags": ",".join(tags),
+            "Tags": ",".join(tags).lower(),
             "AnswerCount": 0,
             "CommentCount": 0,
             "FavoriteCount": 0,
@@ -146,9 +138,28 @@ def post_question(title, body, uid, tags):
         if uid is not None:
             post["OwnerUserId"] = uid
 
-        post["Id"] = generate_unique_post_id(10)
+        post["Id"] = generate_unique_id(10, collection="Posts")
 
         post_id = db.Posts.insert_one(post).inserted_id
+
+        # Post tags or increment tag count
+        for tag in tags:
+            tag = tag.lower()
+            result = db.Tags.find_one({"TagName": tag})
+            if result is None:
+                # Add and set count to one
+                tag_insert = {
+                    "Id": generate_unique_id(10, collection="Tags"),
+                    "TagName": tag,
+                    "Count": 1
+                }
+                tag_id = db.Tags.insert_one(tag_insert).inserted_id
+            else:
+                # increment count
+                query = {"TagName": tag}
+                newvalues = {"$set": {"Count": (result["Count"] + 1)}}
+                db.Tags.update_one(query, newvalues)
+
     except Exception as e:
         print(e)
         return False
@@ -254,7 +265,7 @@ def post_answer(qid, body, uid):
         if uid is not None:
             post["OwnerUserId"] = uid
 
-        post["Id"] = generate_unique_post_id(10)
+        post["Id"] = generate_unique_id(10, collection="Posts")
 
         post_id = db.Posts.insert_one(post).inserted_id
     except Exception as e:
@@ -287,7 +298,7 @@ def post_vote(pid, uid):
                 print("You have already voted on this post!")
                 return False
 
-        vote["Id"] = generate_unique_vote_id(10)
+        vote["Id"] = generate_unique_id(10, collection="Votes")
         vote_id = db.Votes.insert_one(vote).inserted_id
         db.Posts.update_one({"Id": pid}, {"$inc": {"Score": 1}})
 
