@@ -98,7 +98,7 @@ def search_select_questions():
         continue
 
     # List results
-    print("Showing results for keywords", str(keywords))
+    print("Showing " + str(len(results)) + " results for keywords", str(keywords))
     print("Enter the index of the post to excute an action on that post:")
     min_i, max_i = get_indices_range(results=results)
     print("")
@@ -190,7 +190,7 @@ def see_question_answers(post):
 
     results = db.get_answers_to_question(post)
 
-    print("Showing answers to post",)
+    print("Showing " + str(len(results)) + " answers to post",)
     print("Enter the index of the post to excute an action on that post:")
     min_i, max_i = get_indices_range(results=results)
     print("")
