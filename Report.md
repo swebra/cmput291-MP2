@@ -71,6 +71,7 @@ The full commit log can be viewed [here](https://github.com/imswebra/cmput291MP2
 Time Estimate: 8 hours
 
 Tasks:
+
 - implement database functionality including:
     - connection
     - post question
