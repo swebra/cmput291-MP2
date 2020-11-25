@@ -54,4 +54,4 @@ if __name__ == "__main__":
             db = db.create_collection(coll)
         insertJsonRowItems(db[coll])
 
-    db.Posts.create_index("terms")
+    db.Posts.create_index("Terms")
