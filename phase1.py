@@ -2,6 +2,7 @@ from sys import argv, exit
 from pathlib import Path
 import re
 from pymongo import MongoClient
+from pymongo.errors import ConnectionFailure
 import ijson
 
 db_name = "291db"
@@ -74,6 +75,14 @@ if __name__ == "__main__":
         client = MongoClient("localhost", int(argv[1]))
     except ValueError:
         print("Invalid port number given")
+        exit(1)
+
+    print("Connecting to server...")
+    try:
+        # Verify connection
+        client.admin.command("ismaster")
+    except ConnectionFailure:
+        print("Server not available")
         exit(1)
 
     if db_name in client.list_database_names():

@@ -1,7 +1,9 @@
 
 from pymongo import MongoClient
+from pymongo.errors import ConnectionFailure
 import datetime
-import random, string
+import random
+import string
 
 db = None
 
@@ -48,13 +50,16 @@ def connect(port):
     """
     client = MongoClient("localhost", port)
 
+    print("Connecting to server...")
     try:
-        global db
-        db = client["291db"]
-    except Exception as e:
-        print(e)
+        # Verify connection
+        client.admin.command("ismaster")
+    except ConnectionFailure:
+        print("Server not available")
         return False
 
+    global db
+    db = client["291db"]
     return True
 
 
