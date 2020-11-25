@@ -2,6 +2,7 @@ from sys import argv, exit
 
 import database as db
 from logged_in import logged_in
+from utils import print_user_statistics
 
 if __name__ == '__main__':
     if (len(argv) <= 1 or len(argv) > 3):
@@ -22,12 +23,7 @@ if __name__ == '__main__':
         uid = argv[2]
         statistics = db.get_user_statistics(uid)
         if statistics is not None:
-            #TODO: Make pretty
-            print("Question Count: " + str(statistics[0]))
-            print("Average Question Score: " + str(statistics[1]))
-            print("Answer Count: " + str(statistics[2]))
-            print("Average Answer Count: " + str(statistics[3]))
-            print("Vote Count: " + str(statistics[4]))
+            print_user_statistics(statistics)
         else:
             print("No statistics found for uid", argv[2])
 

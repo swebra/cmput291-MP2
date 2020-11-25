@@ -90,6 +90,7 @@ Tasks:
 - Execution of manual testing
 - Additions to report
 - Various bug fixes across codebase
+- Implemented several util functions
 
 #### Eric
 
