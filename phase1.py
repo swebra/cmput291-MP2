@@ -1,14 +1,15 @@
 from sys import argv, exit
 import re
+import multiprocessing
 from pymongo import MongoClient
 import ijson
 
 db_name = "291db"
-buffer_size = 1000
-term_pattern = re.compile("^[A-Za-z0-9]")
+buffer_size = 10000
+term_pattern = re.compile("[A-Za-z0-9]{3,}")
 
 
-def insertJsonRowItems(collection):
+def insert_json(collection):
     coll_name = collection.name
     is_posts = coll_name == "Posts"
     with open("json/" + coll_name + ".json", "r") as f:
@@ -16,25 +17,30 @@ def insertJsonRowItems(collection):
 
         doc_buffer = []
         for doc in docs:
-            if is_posts:
-                addTermList(doc)
-
             doc_buffer.append(doc)
             if len(doc_buffer) >= buffer_size:
-                collection.insert_many(doc_buffer)
+                insert_doc_list(collection, doc_buffer, is_posts)
                 doc_buffer = []
         # "Flush" any remaining docs in buffer
         if doc_buffer:
-            collection.insert_many(doc_buffer)
+            insert_doc_list(collection, doc_buffer, is_posts)
 
 
-def addTermList(doc):
+def insert_doc_list(collection, doc_list, is_posts=False):
+    if is_posts:
+        with multiprocessing.Pool() as pool:
+            pool.map(add_term_list, doc_list)
+
+    collection.insert_many(doc_list)
+
+
+def add_term_list(doc):
     # String concatenation marginally faster than regex*3 and set updates
     title_body_str = doc.get("Title", "") + " " + doc.get("Body", "") \
                      + " " + doc.get("Tags", "")
-    terms = set([term.lower() for term in term_pattern.findall(title_body_str) if len(term) >= 3])
+    terms = set(term_pattern.findall(title_body_str))
     if terms:
-        doc["Terms"] = list(terms)
+        doc["Terms"] = [term.lower() for term in terms]
 
 
 if __name__ == "__main__":
@@ -52,6 +58,6 @@ if __name__ == "__main__":
         if coll in db.list_collection_names():
             db.drop_collection(coll)
             db = db.create_collection(coll)
-        insertJsonRowItems(db[coll])
+        insert_json(db[coll])
 
     db.Posts.create_index("Terms")
