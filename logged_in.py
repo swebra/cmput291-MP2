@@ -194,7 +194,19 @@ def see_question_answers(post):
     print("Enter the index of the post to excute an action on that post:")
     min_i, max_i = get_indices_range(results=results)
     print("")
-    print_search_results(results, min_i, max_i, answer=True)
+
+    accepted_answer_id = post.get("AcceptedAnswerId")
+    if accepted_answer_id:
+        # Move accepted answer to first position
+        for i in range(len(results)):
+            if results[i]["Id"] == accepted_answer_id:
+                accepted_answer_idx = i
+                break
+        accepted_answer = results.pop(i)
+        results.insert(0, accepted_answer)
+
+    # Only need to print on the first display of results
+    print_search_results(results, min_i, max_i, answer=True, accepted_id=accepted_answer_id)
 
     # Select posts
     while (True):
@@ -260,7 +272,7 @@ def post_vote(post):
         print("Vote failed to post")
 
 
-def print_search_results(results, min_i, max_i, answer=False):
+def print_search_results(results, min_i, max_i, answer=False, accepted_id=None):
     """Prints the formatted results from a search of posts
 
     Args:
@@ -283,6 +295,8 @@ def print_search_results(results, min_i, max_i, answer=False):
                                    index_start=min_i + 1, # Start indices at 1
                                    answer=answer)
 
+    if accepted_id:
+        table[1][0] = "*" + table[1][0]
     # Generate width string
     # Right-aligned index * len(header)
     width_str ="{{:{}}}  " * len(header)
