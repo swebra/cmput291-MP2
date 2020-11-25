@@ -8,11 +8,23 @@ Group Members:
 ## System Overview
 The system was implemented in Python and uses a CLI interface for user interaction.
 
-General, high-level flow:
+### General, high-level flow:
+#### For Phase 1:
 ```
-For Phase 1:
-
-For Phase 2:
+1. phase1 -> phase1.insertJsonRowItems()
+2. phase1.insertJsonRowItems() -> phase1.addTermList()
+```
+#### For Phase 2:
+```
+1. phase2 -> logged_in.logged_in()
+2a. logged_in.logged_in() -> logged_in.post_question()
+2b. logged_in.logged_in() <-> logged_in.search_select_posts()
+    3. logged_in.logged_in() -> logged_in.question_action()
+    4a. logged_in.question_action() -> logged_in.post_answer()
+    4b. logged_in.question_action() -> logged_in.post_vote()
+    4c. logged_in.question_action() <-> logged_in.see_question_answers()
+        5. logged_in.question_action() -> logged_in.answer_action()
+        6. logged_in.answer_action() -> logged_in.post_vote()
 ```
 
 ### User Guide
@@ -37,10 +49,16 @@ For Phase 2:
 `utils.py` is the only other python file, and contains helper utility functions. These functions are used for tasks such as input parsing, error messaging and print formatting. This allows easy reuse of common functionality, keeping other files clean. 
 
 ## Testing Strategy
-> General strategy discussion, coverage
+The testing strategy consisted of the manual testing of the UI elements of the program as well as the manual testing and timing of queries to the Mongo database.
 
 ## Group Work Strategy
-> Strategy overview,
+Our group began work on the project ~1 week before the deadline. At this time, each member of the team began to familiarize themselves with the project and began to understand what was required. Because this project was structurally similar to the Mini-Project 1, members already were fairly familiar with the requirements of the project. As members began to work, they would update the other members on what had been accomplished and what was the next item on the TODO list as well as any bugs or issues that they had encountered. Group members would consistently keep a tally of what work was completed and what work was still required to implement and group members were able to choose tasks to whittle down the necessary work.
+
+As our group was not able to meet in person to work on this project, we had a group chat made to ensure constant communication between members. Members were able to keep each other up-to-date on what had been completed and what was still left to be done. Members were could also consult the group when they found a task to be difficult and needed assistance. This allowed members to work individually, but collaborate if needed. As well, it ensured that the program that was developed matched the requirements and expectations of each member.
+
+In order to ensure all requirements were met, lists of tasks were made by directly consulting the requirements. This allowed us to stay organized and address the needed features of the projects. In order to not miss any clarifications, we also copied all the clarifications into our todo list so that we could change our previous work if needed and could easily see the clarifications for new work.
+
+Overall, our group maintained good communication throughout the project with members volunteering on what aspects they wanted to work on. All members were eager to contribute and the dynamics of the team were positive.
 
 ### Member estimates and tasks
 The full commit log can be viewed [here](https://github.com/imswebra/cmput291MP2/commits/master).
@@ -66,6 +84,10 @@ Tasks:
     - post_answer()
     - search_questions()
     - post_vote()
+- Addition of docstrings to the implemented functions listed above
+- Execution of manual testing
+- Additions to report
+- Various bug fixes across codebase
 
 #### Eric
 
