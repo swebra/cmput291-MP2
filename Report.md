@@ -29,7 +29,7 @@ The system was implemented in Python and uses a CLI interface for user interacti
 
 ### User Guide
 #### For Phase 1:
-1. Initialize the database with `python3 phase1.py $PORT $DIR` where $PORT is the port number on which MongoDB is running and $DIR is the directory which contains Posts.json, Tags.json and Votes.json.
+1. Initialize the database with `python3 phase1.py $PORT $DIR` where $PORT is the port number on which MongoDB is running and $DIR is an optional parameter to specify the directory to look for Posts.json, Tags.json and Votes.json. If $DIR is not specified, the current working directory will be used.
 2. This will read the Posts.json, Tags.json, and Votes.json files listed under the $DIR directory and populate the MongoDB database `291db`.
 
 #### For Phase 2:
@@ -39,10 +39,10 @@ The system was implemented in Python and uses a CLI interface for user interacti
 
 ## Software Design
 #### For Phase 1:
-`phase2.py` handles the CLI arguments and has the following responsibilities: Initialize the database connection (via `database.py`), read json entries from the Posts.json, Tags.json and Votes.json files within the provided directory and insert the documents into the `291db` database.
+`phase1.py` handles the CLI arguments and has the following responsibilities: Initialize the database connection (via `database.py`), read json entries from the Posts.json, Tags.json and Votes.json files within the provided directory and insert the documents into the `291db` database.
 
 #### For Phase 2:
-`phase1.py` handles the CLI arguments and has only three responsibilities: Initialize the database connection (via `database.py`), display statistics about the current user if a UID is provided, and pass the user information to the main execution loop of `logged_in.py`.
+`phase2.py` handles the CLI arguments and has only three responsibilities: Initialize the database connection (via `database.py`), display statistics about the current user if a UID is provided, and pass the user information to the main execution loop of `logged_in.py`.
 
 `logged_in.py` contains the code for the main execution loop of the program. `logged_in()` is the highest level function that prompts the user to either post a question or search for a question and calls their respective subfunctions (`post_question()` and `search_select_questions()`). After a question is posted, the user is returned to this top-level menu, but after a successful search and selection, the selected question pid is passed to the `question_action()` function. This function allows the user to select question-actions, namely, answering the selected question, listing all the answers of the selected question and selecting one of the answers, and voting on the question. Each of these question-actions also have their own subfunctions. The subfunction for listing and selecting answers, `see_question_answers()`, passes the selection answer pid to `answer_action()` which allows users to vote on the selected answer. This nesting subfunction structure follows what would be expected from a menu structure for this program, and thus it facilitates allowing the code to move back up the menu tree. Each of the subfunctions within `logged_in.py` interact with the database through related functions within `database.py`.
 
@@ -106,7 +106,7 @@ Tasks:
 
 #### Eric
 
-Time Estimate:
+Time Estimate: 14 hours
 
 Tasks:
 
