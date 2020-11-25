@@ -29,7 +29,7 @@ def insert_json(collection):
 def insert_doc_list(collection, doc_list, is_posts=False):
     if is_posts:
         with multiprocessing.Pool() as pool:
-            pool.map(add_term_list, doc_list)
+            doc_list = list(pool.map(add_term_list, doc_list))
 
     collection.insert_many(doc_list)
 
@@ -41,6 +41,7 @@ def add_term_list(doc):
     terms = set(term_pattern.findall(title_body_str))
     if terms:
         doc["Terms"] = [term.lower() for term in terms]
+    return doc
 
 
 if __name__ == "__main__":
