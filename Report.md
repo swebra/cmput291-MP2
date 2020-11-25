@@ -48,10 +48,11 @@ The system was implemented in Python and uses a CLI interface for user interacti
 
 `database.py` is somewhat standalone in contrast. It contains and abstracts away all of the MongoDB interaction code, and is thus referenced at all levels of the program. For the most part, the functions defined in this file have equivalents in `logged_in.py`; While those handle user input, errors, printing, and the navigation structure, the equivalents in `database.py` contain strictly the MongoDB calls, with some of the error handling being passed back up to the calling function.
 
-`utils.py` is the only other python file, and contains helper utility functions. These functions are used for tasks such as input parsing, error messaging and print formatting. This allows easy reuse of common functionality, keeping other files clean. 
+`utils.py` is the only other python file, and contains helper utility functions. These functions are used for tasks such as input parsing, error messaging and print formatting. This allows easy reuse of common functionality, keeping other files clean.
 
 ## Testing Strategy
-The testing strategy consisted of the manual testing of the UI elements of the program as well as the manual testing and timing of queries to the Mongo database.
+Two primary testing strategies were employed. Firstly, manually testing was done of UI and functionality. Each requirements were tested by simulating the actions described on the rubric. Correctness was checked by
+using the mongo terminal and ensuring that expected results were there. UI/control functionality was also tested during this time. Secondly, to test the speed, shell scripts were created to time performance, specifically in phase 1. From this, we were able to increase performance of phase 1 by analyzing the time increase/decrease of specific changes. We also manually tested the timing of actions, such as search to ensure they were "instant".
 
 ## Group Work Strategy
 Our group began work on the project ~1 week before the deadline. At this time, each member of the team began to familiarize themselves with the project and began to understand what was required. Because this project was structurally similar to the Mini-Project 1, members already were fairly familiar with the requirements of the project. As members began to work, they would update the other members on what had been accomplished and what was the next item on the TODO list as well as any bugs or issues that they had encountered. Group members would consistently keep a tally of what work was completed and what work was still required to implement and group members were able to choose tasks to whittle down the necessary work.
@@ -67,12 +68,21 @@ The full commit log can be viewed [here](https://github.com/imswebra/cmput291MP2
 
 #### Mitchell
 
-Time Estimate:
+Time Estimate: 8 hours
 
 Tasks:
-
-- Example task, delete me
-
+- implement database functionality including:
+    - connection
+    - post question
+- implement control of CLI
+    - create function outlines
+    - establish utility functions
+    - implement doc strings
+    - code cleanup
+- testing
+    - thoroughly test program according to rubric
+    - identify key bugs
+- additions to import
 #### Nayan
 
 Time Estimate:
