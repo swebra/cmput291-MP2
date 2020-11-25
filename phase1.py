@@ -5,7 +5,7 @@ import ijson
 
 db_name = "291db"
 buffer_size = 1000
-term_pattern = re.compile("\w{3,}")
+term_pattern = re.compile("^[A-Za-z0-9]")
 
 
 def insertJsonRowItems(collection):
@@ -29,11 +29,12 @@ def insertJsonRowItems(collection):
 
 
 def addTermList(doc):
-    # String concatenation marginally faster than regex*2 and set union
-    title_body_str = doc.get("Title", "") + " " + doc.get("Body", "")
-    terms = set(term_pattern.findall(title_body_str))
+    # String concatenation marginally faster than regex*3 and set updates
+    title_body_str = doc.get("Title", "") + " " + doc.get("Body", "") \
+                     + " " + doc.get("Tags", "")
+    terms = set([term.lower() for term in term_pattern.findall(title_body_str) if len(term) >= 3])
     if terms:
-        doc["terms"] = [term.lower() for term in terms]
+        doc["Terms"] = list(terms)
 
 
 if __name__ == "__main__":
