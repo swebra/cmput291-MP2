@@ -169,15 +169,15 @@ def search_questions(keywords):
         conditions = []
         for keyword in keywords:
             if len(keyword) >= 3:
-                conditions.append({"Terms" : keywords[0]})
+                conditions.append({"Terms": keyword.lower()})
             else:
-                conditions.append({"Title" : {"$regex" : "^.*" + keywords[0], "$options": "-i"}})
-                conditions.append({"Body" : {"$regex" : "^.*" + keywords[0], "$options": "-i"}})
+                conditions.append({"Title": {"$regex": "^.*" + keyword, "$options": "-i"}})
+                conditions.append({"Body": {"$regex": "^.*" + keyword, "$options": "-i"}})
 
         query = {
-            "$and" : [
+            "$and": [
                 {"PostTypeId": "1"},
-                { "$or" : conditions}
+                {"$or": conditions}
             ]
         }
 
