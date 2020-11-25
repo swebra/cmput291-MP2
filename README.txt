@@ -18,5 +18,12 @@ virtualenv management.
 https://virtualenvwrapper.readthedocs.io/en/latest/
 
 Instructions to run:
-FIXME
+1. Initialize the database with `python3 phase1.py $PORT $DIR` where $PORT is
+   the port number on which MongoDB is running and $DIR is an optional parameter
+   to specify the directory to look for Posts.json, Tags.json and Votes.json.
+   If $DIR is not specified, the current working directory will be used.
+2. After Phase 1 has completed, run phase 2 can be ran with
+   `python3 phase2.py $PORT $UID` where $PORT is the port number on which
+   MongoDB is running and $UID is an optional parameter to specify the User Id
+   which is logging into the system.
 
