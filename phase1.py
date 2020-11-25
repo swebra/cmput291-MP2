@@ -80,7 +80,7 @@ if __name__ == "__main__":
         if coll in db.list_collection_names():
             db.drop_collection(coll)
             db = db.create_collection(coll)
-        insert_json(db[coll], argv[2])
+        insert_json(db[coll], argv[2] if len(argv) == 3 else "")
 
     print("Creating index...")
     db.Posts.create_index("Terms")
