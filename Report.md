@@ -30,7 +30,8 @@ The system was implemented in Python and uses a CLI interface for user interacti
 ### User Guide
 #### For Phase 1:
 1. Initialize the database with `python3 phase1.py $PORT` where $PORT is the port number on which MongoDB is running
-2. This will read the Posts.json, Tags.json, and Votes.json files listed under the json/ directory and populate the MongoDB database `291db`
+2. This will read the Posts.json, Tags.json, and Votes.json files listed under the json/ directory and populate the MongoDB database `291db`.
+
 #### For Phase 2:
 1. After Phase 1 has completed, Run phase 2 with `python3 phase2.py $PORT $UID` where $PORT is the port number on which MongoDB is running and $UID is an optional parameter to specify the User Id which is logging into the system
 2. From here, the program will prompt the user for input, allowing the user to execute the desired functionality of the program. Any changes made to the database through the program will be reflected in the `291db` Mongo database
@@ -38,6 +39,7 @@ The system was implemented in Python and uses a CLI interface for user interacti
 
 ## Software Design
 #### For Phase 1:
+`phase2.py` handles the CLI arguments and has the following responsibilities: Initialize the database connection (via `database.py`), read json entries from the Posts.json, Tags.json and Votes.json files within the json/ directory and insert the documents into the `291db` database.
 
 #### For Phase 2:
 `phase1.py` handles the CLI arguments and has only three responsibilities: Initialize the database connection (via `database.py`), display statistics about the current user if a UID is provided, and pass the user information to the main execution loop of `logged_in.py`.
