@@ -11,7 +11,6 @@ term_pattern = re.compile("[A-Za-z0-9]{3,}")
 
 def insert_json(collection):
     coll_name = collection.name
-    is_posts = coll_name == "Posts"
     with open("json/" + coll_name + ".json", "r") as f:
         docs = ijson.items(f, coll_name.lower() + ".row.item")
 
@@ -19,15 +18,15 @@ def insert_json(collection):
         for doc in docs:
             doc_buffer.append(doc)
             if len(doc_buffer) >= buffer_size:
-                insert_doc_list(collection, doc_buffer, is_posts)
+                insert_doc_list(collection, doc_buffer)
                 doc_buffer = []
         # "Flush" any remaining docs in buffer
         if doc_buffer:
-            insert_doc_list(collection, doc_buffer, is_posts)
+            insert_doc_list(collection, doc_buffer)
 
 
-def insert_doc_list(collection, doc_list, is_posts=False):
-    if is_posts:
+def insert_doc_list(collection, doc_list):
+    if collection.name == "Posts":
         with multiprocessing.Pool() as pool:
             doc_list = list(pool.map(add_term_list, doc_list))
 
