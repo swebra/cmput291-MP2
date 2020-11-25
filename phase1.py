@@ -1,4 +1,5 @@
 from sys import argv, exit
+from pathlib import Path
 import re
 from pymongo import MongoClient
 import ijson
@@ -8,18 +9,25 @@ buffer_size = 1000
 term_pattern = re.compile("[A-Za-z0-9]{3,}")
 
 
-def insert_json(collection):
+def insert_json(collection, json_dir):
     """Inserts items into the given collection read from a JSON file
     The JSON file is expected to match the collection's name, and have a list
     of data entries under the <collection name>.row field. Reading is buffered
     according to the global `buffer_size` parameter to limit memory usage.
 
     Args:
-        collection: Mongo collection to insert json data into
+        collection (collection): Mongo collection to insert JSON data into
+        json_dir (str): Path to directory containing the expected JSON file
     """
     coll_name = collection.name
     is_posts = coll_name == "Posts"
-    with open("json/" + coll_name + ".json", "r") as f:
+    json_path = Path(json_dir, coll_name + ".json")
+    if not json_path.exists():
+        print(json_path, "could not be found, data not read.")
+        return
+
+    with json_path.open(mode="r") as f:
+        print("Parsing", str(json_path) + "...")
         docs = ijson.items(f, coll_name.lower() + ".row.item")
 
         doc_buffer = []
@@ -53,8 +61,13 @@ def add_term_list(doc):
 
 
 if __name__ == "__main__":
-    if (len(argv) <= 1 or len(argv) > 2):
-        print("One database port argument expected, received", len(argv) - 1)
+    if (len(argv) <= 1):
+        print("Database port expected as a command-line argument")
+        exit(1)
+
+    if (len(argv) > 3):
+        print("Maximum of two command-line arguments expected (port and json",
+              "directory), received", len(argv) - 1)
         exit(1)
 
     client = MongoClient("localhost", int(argv[1]))
@@ -67,6 +80,8 @@ if __name__ == "__main__":
         if coll in db.list_collection_names():
             db.drop_collection(coll)
             db = db.create_collection(coll)
-        insert_json(db[coll])
+        insert_json(db[coll], argv[2])
 
+    print("Creating index...")
     db.Posts.create_index("Terms")
+    print("Done")
